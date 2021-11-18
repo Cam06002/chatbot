@@ -1,0 +1,62 @@
+import random
+import requests
+import pyjokes
+import wikipedia
+import bs4
+from googlesearch import search
+import webbrowser
+from chatterbot import ChatBot
+from chatterbot.trainers import ListTrainer
+from chatterbot.trainers import ChatterBotCorpusTrainer
+
+my_bot = ChatBot(name='Zuzu', read_only=False,
+                 logic_adapters=[
+                     {
+                         'import_path':'chatterbot.logic.BestMatch',
+                         'default_response': "I'm sorry, but I don't understand.",
+                         'maximum_similarity_threshold': 0.90
+                     }
+                     ])
+
+corpus_trainer = ChatterBotCorpusTrainer(my_bot)
+corpus_trainer.train('chatterbot.corpus.english')
+
+greeting = "How can I help you today?"
+
+
+print(greeting)
+
+
+while True:
+    query = input()
+    query = query.lower()
+    #interacting with Zuzu
+    if 'name' in query:
+        print("My name is Zuzu!")
+
+    elif 'joke' in query:
+        print(pyjokes.get_joke())
+    elif 'how are you' in query:
+        answers = ["I'm fine, thank you", "None of your damn business",
+                   "Just chillin like a villian", "Absolutely fantastic!",
+                   "Sleepy and bored", "I am doing well"]
+        print(random.choice(answers))
+    elif 'do you like' in query:
+        likes = ["When it's good", "I'm not a fan", "That's distasteful",
+                 "Oh my God, I love it!", "If you like it, I do too"]
+        print(random.choice(likes))
+
+    elif "goodbye" in query:
+        print("Have a nice day!")
+    #wikipedia
+    elif 'who is' in query:
+        query = query.replace('who is', "")
+        print(wikipedia.summary(query, 2))
+    elif 'what is' in query:
+        query = query.replace('who is', "")
+        print(wikipedia.summary(query, 2))
+
+    #google
+    elif 'show me' in query:
+        query = query.replace("show me", "")
+        webbrowser.open("https://www.google.com/search?tbm=isch&q=" + query)
